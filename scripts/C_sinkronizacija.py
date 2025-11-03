@@ -1,6 +1,5 @@
 import pandas as pd
-
-file_path = "sve_dionice_merged_EUR_filled.xlsx"
+file_path = "..\sve_dionice_merged_EUR_filled.xlsx"
 
 xls = pd.ExcelFile(file_path)
 

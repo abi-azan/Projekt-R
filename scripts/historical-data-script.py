@@ -1,7 +1,7 @@
 import os
 import requests
 
-input_file = 'c:\\ferprogrami\\.vscode\\PROJEKT R\\ticker-isin.txt'
+input_file = 'txt\\ticker-isin.txt'
 output_dir = 'downloaded_xlsx'
 start_date = '2010-01-01'
 end_date = '2025-10-27'

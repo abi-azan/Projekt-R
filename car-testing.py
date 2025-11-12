@@ -73,8 +73,8 @@ for idx_dogadaj, red in dogadaji.iterrows():    # iterira red po red po dogadaji
 
     # OBAVEZNO POKUSAJTE GENERIRATI ZA DELETIONS_EVENT.csv s ovim i bez ovog skipa
     # ispada da je to ogroman outlier
-    # if (stock["Symbol"] == 'DDJH').any():
-    #     continue
+    if (stock["Symbol"] == 'DDJH').any() and datum_dogadaja == pd.to_datetime('2022-07-14'):
+        continue
 
 
     exact_match = stock[stock["Date"] == datum_dogadaja]
@@ -142,7 +142,7 @@ for idx_dogadaj, red in dogadaji.iterrows():    # iterira red po red po dogadaji
     # KONTROLNI ISPIS ZA PRAĆENJE TOKA
     # print(f"Iteracija: {idx_dogadaj}, Dionica: {ime_dionice}, Datum dogadaja: {datum_dogadaja.date()}, CAR_kraj={car_kraj:.4f}")
     
-    if car_kraj > 0.05 or car_kraj < -0.05:
+    if car_kraj > 0.3 or car_kraj < -0.3:
         print(f"PAZI, {ime_dionice}: Event={event_date_actual.date()} , CAR_kraj={car_kraj:.4f}, CAR_event={merged.loc[merged['DayOffset']==0, 'CAR'].values[0]:.4f}")
 
     # print(f"[OK] {ime_dionice}: Event={event_date_actual.date()} (original: {datum_dogadaja.date()}), {len(merged)} dana, CAR_kraj={merged['CAR'].iloc[-1]:.4f}, CAR_event={merged.loc[merged['DayOffset']==0, 'CAR'].values[0]:.4f}")
@@ -160,16 +160,16 @@ for idx_dogadaj, red in dogadaji.iterrows():    # iterira red po red po dogadaji
         "CAR_total": merged["CAR"].iloc[-1]
     })
 
-    if ime_dionice == 'RIVP':
-        out_path = os.path.join(output_dir, f"{ime_dionice}_CAR.csv")
-        merged_output = merged.copy()
-        merged_output["EventDateOriginal"] = datum_dogadaja.date()
-        merged_output["EventDateActual"] = event_date_actual.date()
-        merged_output.to_csv(out_path, index=False)
+    # if ime_dionice == 'RIVP':
+    #     out_path = os.path.join(output_dir, f"{ime_dionice}_CAR.csv")
+    #     merged_output = merged.copy()
+    #     merged_output["EventDateOriginal"] = datum_dogadaja.date()
+    #     merged_output["EventDateActual"] = event_date_actual.date()
+    #     merged_output.to_csv(out_path, index=False)
 
 # VAŽNO - stvara se df iz rjecnika
 df_rez = pd.DataFrame(rezultati)
-df_rez.to_csv(os.path.join(output_dir, "rezultati_pojedinacni.csv"), index=False)
+# df_rez.to_csv(os.path.join(output_dir, "rezultati_pojedinacni.csv"), index=False)
 # print(f"\n[OK] Rezultati spremljeni ({len(df_rez)} dionice)")
 if sve_car_podaci:
     combined = pd.concat(sve_car_podaci, ignore_index=True)
@@ -182,7 +182,7 @@ if sve_car_podaci:
     avg_car.columns = ["DayOffset", "CAR_mean", "CAR_std", "Count", "AR_mean"]
     avg_car = avg_car.sort_values("DayOffset")
     
-    avg_car.to_csv(os.path.join(output_dir, "CAR_prosjek.csv"), index=False)
+    # avg_car.to_csv(os.path.join(output_dir, "CAR_prosjek.csv"), index=False)
     print(f"[OK] Prosjecni CAR spremljen ({len(avg_car)} dana)")
 
     # Grafikon
@@ -196,14 +196,14 @@ if sve_car_podaci:
     plt.legend(loc='best')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, "CAR_prosjek.png"), dpi=150)
+    # plt.savefig(os.path.join(output_dir, "CAR_prosjek.png"), dpi=150)
     plt.show()
     
-    if len(avg_car[avg_car['DayOffset']==0]) > 0:
-        print(f"\n[GRAF] CAR na dan event (day 0): {avg_car[avg_car['DayOffset']==0]['CAR_mean'].values[0]:.4f}")
-    if len(avg_car[avg_car['DayOffset']==15]) > 0:
-        print(f"[GRAF] CAR 15 dana nakon (day +15): {avg_car[avg_car['DayOffset']==15]['CAR_mean'].values[0]:.4f}")
-    if len(avg_car[avg_car['DayOffset']==-15]) > 0:
-        print(f"[GRAF] CAR 15 dana prije (day -15): {avg_car[avg_car['DayOffset']==-15]['CAR_mean'].values[0]:.4f}")
+    # if len(avg_car[avg_car['DayOffset']==0]) > 0:
+    #     print(f"\n[GRAF] CAR na dan event (day 0): {avg_car[avg_car['DayOffset']==0]['CAR_mean'].values[0]:.4f}")
+    # if len(avg_car[avg_car['DayOffset']==15]) > 0:
+    #     print(f"[GRAF] CAR 15 dana nakon (day +15): {avg_car[avg_car['DayOffset']==15]['CAR_mean'].values[0]:.4f}")
+    # if len(avg_car[avg_car['DayOffset']==-15]) > 0:
+    #     print(f"[GRAF] CAR 15 dana prije (day -15): {avg_car[avg_car['DayOffset']==-15]['CAR_mean'].values[0]:.4f}")
 else:
     print("Nema podataka za prosječni CAR.")

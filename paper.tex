@@ -1,7 +1,10 @@
 \documentclass{article}
+\usepackage[a4paper, total={7in, 9in}]{geometry}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{booktabs}
 \usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsfonts}
 
 \title{CROBEX index rebalancing effects}
 \author{Albert Maršić, Damjan Crnković, Mihael Vranić \\ 
@@ -12,9 +15,7 @@
 
 \maketitle
 
-\begin{abstract}
-We study the short-horizon price effects of CROBEX index rebalancing at the Zagreb Stock Exchange. Using all insertions and deletions since 2010, we focus on the period between the official announcement and the effective implementation date. We form equal-weighted event portfolios to compute daily abnormal returns relative to the CROBEX benchmark and calculate cumulative abnormal returns (CAR) around the effective date in a \(\pm 50\) trading-day window. We also evaluate two portfolio constructions: a daily rebalanced event portfolio and a simple announcement-to-effective holding strategy. Average abnormal returns are small and statistically insignificant, while CAR for deletions is persistently negative around implementation. Portfolio evidence shows a strong divergence between insertion and deletion event windows.
-\end{abstract}
+
 
 \section{Introduction}
 Stock market indices are key benchmarks for portfolio performance and investment strategies, and changes in their composition can affect stock prices and trading activity. Additions to or removals from an index may lead investors to adjust their portfolios, resulting in abnormal price movements around rebalancing periods.
@@ -36,6 +37,51 @@ Daily price data are taken from a merged dataset where each stock has its own sh
 
 Daily returns for the event-window analysis use the \texttt{Change Prev Close Percentage} field, and missing values are filled with zero to avoid dropping days from the aggregated portfolio. All results are based on the available trading days between the announcement and effective dates.
 
+Table~\ref{tab:data_overview} summarizes the sample size and the announcement-to-effective lag (calendar days). Table~\ref{tab:events_by_year} reports the event counts by announcement year with the regular/irregular split. Market capitalization and volume are not consistently available in the ZSE downloads, so we do not report those statistics.
+
+\begin{table}[htbp]
+\centering
+\caption{Sample overview and announcement-to-effective lag (calendar days).}
+\label{tab:data_overview}
+\begin{tabular}{lrrrrr}
+\toprule
+Portfolio & Stock-event pairs & Unique events & Unique symbols & Mean lag & Median lag \\
+\midrule
+Insertions & 101 & 32 & 58 & 13.43 & 12 \\
+Deletions & 105 & 41 & 54 & 16.66 & 13 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Events by announcement year with regular/irregular split (stock-event pairs).}
+\label{tab:events_by_year}
+\scriptsize
+\begin{tabular}{rrrrrrr}
+\toprule
+Year & Ins. & Del. & Reg. Ins. & Irr. Ins. & Reg. Del. & Irr. Del. \\
+\midrule
+2010 & 3 & 3 & 3 & 0 & 3 & 0 \\
+2011 & 7 & 7 & 7 & 0 & 7 & 0 \\
+2012 & 5 & 5 & 5 & 0 & 5 & 0 \\
+2013 & 4 & 7 & 4 & 0 & 6 & 1 \\
+2014 & 10 & 6 & 10 & 0 & 6 & 0 \\
+2015 & 16 & 16 & 15 & 1 & 16 & 0 \\
+2016 & 6 & 7 & 6 & 0 & 5 & 2 \\
+2017 & 6 & 11 & 6 & 0 & 7 & 4 \\
+2018 & 5 & 5 & 5 & 0 & 5 & 0 \\
+2019 & 1 & 5 & 1 & 0 & 5 & 0 \\
+2020 & 11 & 7 & 11 & 0 & 7 & 0 \\
+2021 & 5 & 3 & 5 & 0 & 3 & 0 \\
+2022 & 7 & 10 & 7 & 0 & 6 & 4 \\
+2023 & 7 & 5 & 7 & 0 & 5 & 0 \\
+2024 & 4 & 5 & 4 & 0 & 4 & 1 \\
+2025 & 4 & 3 & 3 & 1 & 3 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Return definitions}
 We compute daily returns from prices as \(R_t = (P_t/P_{t-1}) - 1\). The \texttt{Change Prev Close Percentage} column is treated as a decimal return (e.g., 0.0062 corresponds to 0.62\%). Abnormal returns and CAR are reported in percentage points for readability.
 
@@ -47,7 +93,11 @@ AR_t = R^{\text{portfolio}}_t - R^{\text{CROBEX}}_t,
 where the benchmark return is the CROBEX daily return on the same date. We test the null hypothesis $\mathbb{E}[AR_t]=0$ using a two-sided t-test.
 
 \subsection{CAR around the effective date}
-To capture price pressure around implementation, we construct a $\pm 50$ trading-day window around the effective date (day 0). For each event, daily returns are computed from \texttt{Last Price} and abnormal returns are defined as stock return minus CROBEX return. The cumulative abnormal return (CAR) is the cumulative sum of daily abnormal returns within the window. Events are aligned by day offset and averaged across the sample. The DDJH deletion on 2022-07-14 is excluded as an outlier with extreme CAR.
+To capture price pressure around implementation, we construct a $\pm 50$ trading-day window around the effective date (day 0). For each event, daily returns are computed from \texttt{Last Price} and abnormal returns are defined as stock return minus CROBEX return. The cumulative abnormal return over a window $[t_1, t_2]$ is
+\[
+CAR_{[t_1, t_2]} = \sum_{t=t_1}^{t_2} AR_t.
+\]
+Events are aligned by day offset and averaged across the sample. The DDJH deletion on 2022-07-14 is excluded as an outlier with extreme CAR.
 
 \subsection{Portfolio constructions}
 As a complementary view, we construct a daily rebalanced, equal-weight portfolio of all active event-window stocks and compound the aggregate daily return to a portfolio value series. This is done separately for insertions and deletions, and again after splitting events into regular and irregular rebalancing groups.
@@ -55,35 +105,7 @@ As a complementary view, we construct a daily rebalanced, equal-weight portfolio
 We also evaluate a simple announcement-to-effective event strategy that invests equal capital across all signals on each announcement date and holds each position until the effective date. Proceeds are reinvested as new signals arrive. This portfolio is reported alongside the daily rebalanced approach for comparison.
 
 \section{Results}
-Table~\ref{tab:sample_overview} summarizes the event sample, while Table~\ref{tab:regular_irregular} shows the regular vs.\ irregular split. Insertions and deletions are of similar size, with slightly more deletion events.
-
-\begin{table}[htbp]
-\centering
-\caption{Event sample overview (2010--2025).}
-\label{tab:sample_overview}
-\begin{tabular}{lrrr}
-\toprule
-Portfolio & Stock-event pairs & Unique events & Unique symbols \\
-\midrule
-Insertions & 101 & 32 & 58 \\
-Deletions & 105 & 41 & 54 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[htbp]
-\centering
-\caption{Regular vs.\ irregular rebalancing events (stock-event pairs).}
-\label{tab:regular_irregular}
-\begin{tabular}{lrr}
-\toprule
-Event type & Regular & Irregular \\
-\midrule
-Insertions & 99 & 2 \\
-Deletions & 93 & 12 \\
-\bottomrule
-\end{tabular}
-\end{table}
+Table~\ref{tab:data_overview} and Table~\ref{tab:events_by_year} report the sample composition and the regular/irregular split by year. Insertions and deletions are of similar size, with slightly more deletion events.
 
 Table~\ref{tab:abnormal_returns} reports the announcement-to-effective abnormal return tests. Average abnormal returns are small in magnitude and not statistically significant at conventional levels for either insertions or deletions.
 
@@ -180,7 +202,9 @@ Day offset & Mean CAR (\%) \\
 \section{Conclusion}
 We study CROBEX rebalancing effects using announcement-to-effective windows and find limited evidence of systematic daily abnormal returns for insertions and deletions. CAR around deletion events is persistently negative, suggesting sustained price pressure around implementation. Portfolio evidence reinforces this asymmetry: insertion windows perform strongly, while deletion windows deteriorate sharply in both the daily rebalanced and the event-trading constructions. Future work should incorporate liquidity, volume, and microstructure controls to test whether the observed effects concentrate in thinly traded names.
 
-Limitations include manual cleaning of irregular/regular update classifications due to inconsistent ZSE releases, the reliance on zero-imputed returns for missing trading days, event overlap, and the equal-weighting assumption. These factors may affect magnitudes but are unlikely to overturn the documented asymmetry between insertions and deletions.
+Limitations include illiquidity in some names, data gaps and zero-imputed returns, event overlap, and the equal-weighting assumption, along with manual cleaning of irregular/regular update classifications due to inconsistent ZSE releases. These factors may affect magnitudes but are unlikely to overturn the documented asymmetry between insertions and deletions. The implications are most relevant for small, less liquid markets where index-tracking flows can generate persistent price pressure around implementation.
+
+\appendix
 
 \begin{thebibliography}{9}
 \bibitem{spglobal-index-effect}
@@ -198,3 +222,16 @@ T. \v{S}krinjari\'c.
 Croatian Review of Economic, Business and Social Statistics, 5(1), 43--54, 2019.
 \end{thebibliography}
 \end{document}
+
+\begin{abstract}
+We study the short-horizon price effects of CROBEX index rebalancing at the Zagreb Stock Exchange. Using all insertions and deletions since 2010, we focus on the period between the official announcement and the effective implementation date. We form equal-weighted event portfolios to compute daily abnormal returns relative to the CROBEX benchmark and calculate cumulative abnormal returns (CAR) around the effective date in a \(\pm 50\) trading-day window. We also evaluate two portfolio constructions: a daily rebalanced event portfolio and a simple announcement-to-effective holding strategy. Average abnormal returns are small and statistically insignificant, while CAR for deletions is persistently negative around implementation. Portfolio evidence shows a strong divergence between insertion and deletion event windows.
+\end{abstract}
+
+\section{Data Cleaning}
+\begin{itemize}
+\item Parsed announcement and effective dates from ZSE release tables and standardized them.
+\item Split insertions/deletions and regular/irregular updates; manually corrected labels where ZSE formatting was inconsistent.
+\item Normalized tickers (trim whitespace, remove -R-A suffix) to match sheet names.
+\item Filled missing daily returns with zero for portfolio aggregation and aligned stock series to the CBX trading calendar.
+\item Excluded the DDJH deletion on 2022-07-14 from CAR analysis as an outlier.
+\end{itemize}

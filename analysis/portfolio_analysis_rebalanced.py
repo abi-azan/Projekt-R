@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 def process_r_style_portfolio(signals_path, excel_reader, master_dates):
     """
@@ -70,7 +73,7 @@ def process_r_style_portfolio(signals_path, excel_reader, master_dates):
 # --- MAIN EXECUTION ---
 
 # Load Excel data
-excel_file = 'sve_dionice_merged_EUR_filled.xlsx'
+excel_file = 'data/processed/sve_dionice_merged_EUR_filled.xlsx'
 reader = pd.ExcelFile(excel_file)
 
 # Get the master timeline from CROBEX (CBX) as the R script does
@@ -78,12 +81,12 @@ cbx_df = pd.read_excel(reader, sheet_name='CBX')
 master_dates = pd.to_datetime(cbx_df['Date']).unique()
 
 # Process both portfolios
-insertions_portfolio = process_r_style_portfolio('INSERTIONS_ANN_EVENT.csv', reader, master_dates)
-deletions_portfolio = process_r_style_portfolio('DELETIONS_ANN_EVENT.csv', reader, master_dates)
-regular_insertions_portfolio = process_r_style_portfolio('regular_added.csv', reader, master_dates)
-irregular_insertions_portfolio = process_r_style_portfolio('irregular_added.csv', reader, master_dates)
-regular_deletions_portfolio = process_r_style_portfolio('regular_deleted.csv', reader, master_dates)
-irregular_deletions_portfolio = process_r_style_portfolio('irregular_deleted.csv', reader, master_dates)
+insertions_portfolio = process_r_style_portfolio('data/events/INSERTIONS_ANN_EVENT.csv', reader, master_dates)
+deletions_portfolio = process_r_style_portfolio('data/events/DELETIONS_ANN_EVENT.csv', reader, master_dates)
+regular_insertions_portfolio = process_r_style_portfolio('data/events/regular_added.csv', reader, master_dates)
+irregular_insertions_portfolio = process_r_style_portfolio('data/events/irregular_added.csv', reader, master_dates)
+regular_deletions_portfolio = process_r_style_portfolio('data/events/regular_deleted.csv', reader, master_dates)
+irregular_deletions_portfolio = process_r_style_portfolio('data/events/irregular_deleted.csv', reader, master_dates)
 # --- GRAPH DRAWING ---
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10), sharex=True)
@@ -106,7 +109,7 @@ ax2.legend()
 ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('r_style_analysis_output.png', dpi=300)
+plt.savefig('outputs/plots/r_style_analysis_output.png', dpi=300)
 
 #Make a 2x2 layout for the regular and irregular insertions and deletions
 fig, axes = plt.subplots(2, 2, figsize=(16, 12), sharex=True)
@@ -139,10 +142,10 @@ axes[1, 1].set_ylabel('Portfolio Value (Base 1.0)')
 axes[1, 1].legend()
 axes[1, 1].grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('r_style_detailed_analysis_output.png', dpi=300)
+plt.savefig('outputs/plots/r_style_detailed_analysis_output.png', dpi=300)
 
 # Save results
-insertions_portfolio.to_csv('r_style_insertions_results.csv', index=False)
-deletions_portfolio.to_csv('r_style_deletions_results.csv', index=False)
+insertions_portfolio.to_csv('outputs/csv/r_style_insertions_results.csv', index=False)
+deletions_portfolio.to_csv('outputs/csv/r_style_deletions_results.csv', index=False)
 
 print("Analysis complete. Graphs saved to 'r_style_analysis_output.png'.")

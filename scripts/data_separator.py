@@ -2,6 +2,9 @@
 
 import pandas as pd
 import re
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 def process_market_data(file_path):
     # Load the Excel file
@@ -47,10 +50,10 @@ def process_market_data(file_path):
 
     # Mapping configurations: (Source Column, Event Type Filter, Target Filename)
     configs = [
-        ("Uključeni", "redovna", "regular_added.csv"),
-        ("Uključeni", "izvanredna", "irregular_added.csv"),
-        ("Isključeni", "redovna", "regular_deleted.csv"),
-        ("Isključeni", "izvanredna", "irregular_deleted.csv")
+        ("Uključeni", "redovna", "data/events/regular_added.csv"),
+        ("Uključeni", "izvanredna", "data/events/irregular_added.csv"),
+        ("Isključeni", "redovna", "data/events/regular_deleted.csv"),
+        ("Isključeni", "izvanredna", "data/events/irregular_deleted.csv")
     ]
 
     # Generate the files
@@ -60,4 +63,4 @@ def process_market_data(file_path):
         print(f"Successfully generated: {filename} ({len(output_df)} entries)")
 
 if __name__ == "__main__":
-    process_market_data('data.xlsx')
+    process_market_data('data/raw/data.xlsx')

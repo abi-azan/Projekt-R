@@ -1,7 +1,10 @@
 import pandas as pd
+import os
 
-SRC = "sve_dionice_merged_EUR.xlsx"
-DST = "sve_dionice_merged_EUR_filled.xlsx"
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+SRC = "data/processed/sve_dionice_merged_EUR.xlsx"
+DST = "data/processed/sve_dionice_merged_EUR_filled.xlsx"
 
 PRICE_COLS = ["Open Price","High Price","Low Price","Last Price","VWAP Price","Prev Close Price"]
 ZERO_COLS  = ["Volume","Num Trades","Turnover"]

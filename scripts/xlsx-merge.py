@@ -1,8 +1,10 @@
 import os
 import pandas as pd
 
-input_dir = 'c:\\ferprogrami\\.vscode\\PROJEKT R\\downloaded_xlsx'
-output_excel = 'sve_dionice_merged.xlsx'
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+input_dir = 'data/raw/downloaded_xlsx'
+output_excel = 'data/processed/sve_dionice_merged.xlsx'
 
 xlsx_fajlovi = [f for f in os.listdir(input_dir) if f.endswith('.xlsx')]
 if not xlsx_fajlovi:

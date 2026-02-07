@@ -1,11 +1,10 @@
 import os
 import openpyxl
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-
-EXCEL_FILE = os.path.join(BASE_DIR, "data.xlsx")      
-OUTPUT_FILE = os.path.join(BASE_DIR, "tickers.txt")   
+EXCEL_FILE = "data/raw/data.xlsx"
+OUTPUT_FILE = "data/txt/tickers.txt"   
 
 
 wb = openpyxl.load_workbook(EXCEL_FILE, data_only=True)

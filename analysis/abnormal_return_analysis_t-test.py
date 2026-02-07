@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 def get_portfolio_daily_returns(signals_path, excel_reader):
     """
@@ -99,7 +102,7 @@ def analyze_abnormal_returns(portfolio_name, signals_file, excel_reader, cbx_df)
 # --- MAIN EXECUTION ---
 
 # 1. Load Data
-excel_file = 'sve_dionice_merged_EUR_filled.xlsx'
+excel_file = 'data/processed/sve_dionice_merged_EUR_filled.xlsx'
 print("Loading Excel file...")
 xls = pd.ExcelFile(excel_file)
 
@@ -112,11 +115,11 @@ cbx_df['Change Prev Close Percentage'] = cbx_df['Change Prev Close Percentage'].
 
 # 3. Analyze Insertions
 print("Analyzing Insertions...")
-ins_stats, ins_data = analyze_abnormal_returns('INSERTIONS', 'INSERTIONS_ANN_EVENT.csv', xls, cbx_df)
+ins_stats, ins_data = analyze_abnormal_returns('INSERTIONS', 'data/events/INSERTIONS_ANN_EVENT.csv', xls, cbx_df)
 
 # 4. Analyze Deletions
 print("Analyzing Deletions...")
-del_stats, del_data = analyze_abnormal_returns('DELETIONS', 'DELETIONS_ANN_EVENT.csv', xls, cbx_df)
+del_stats, del_data = analyze_abnormal_returns('DELETIONS', 'data/events/DELETIONS_ANN_EVENT.csv', xls, cbx_df)
 
 # 5. Create Results Table
 results_list = []
@@ -142,6 +145,6 @@ print("Significance: *** < 0.01, ** < 0.05, * < 0.1")
 
 # 6. Save Detailed Time Series to CSV (Optional)
 if ins_data is not None:
-    ins_data.to_csv('insertions_abnormal_returns_daily.csv', index=False)
+    ins_data.to_csv('outputs/csv/insertions_abnormal_returns_daily.csv', index=False)
 if del_data is not None:
-    del_data.to_csv('deletions_abnormal_returns_daily.csv', index=False)
+    del_data.to_csv('outputs/csv/deletions_abnormal_returns_daily.csv', index=False)

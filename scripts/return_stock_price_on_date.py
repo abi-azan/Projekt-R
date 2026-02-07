@@ -1,12 +1,15 @@
 import pandas as pd
 import numpy as np
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 # -----------------------
 # FILE PATHS
 # -----------------------
-events_file = "xlsx//inserted-deleted.xlsx"
-index_file = "XZAG-IndexHistory-HRZB00ICBEX6-2010-01-01 - 2025-11-03.csv"
-stocks_file = "sve_dionice_merged_EUR_filled.xlsx"
+events_file = "data/raw/inserted-deleted.xlsx"
+index_file = "data/raw/XZAG-IndexHistory-HRZB00ICBEX6-2010-01-01 - 2025-11-03.csv"
+stocks_file = "data/processed/sve_dionice_merged_EUR_filled.xlsx"
 
 
 # -----------------------

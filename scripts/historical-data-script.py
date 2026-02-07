@@ -1,8 +1,10 @@
 import os
 import requests
 
-input_file = 'txt\\ticker-isin.txt'
-output_dir = 'downloaded_xlsx'
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+input_file = 'data/txt/ticker-isin.txt'
+output_dir = 'data/raw/downloaded_xlsx'
 start_date = '2010-01-01'
 end_date = '2025-10-27'
 

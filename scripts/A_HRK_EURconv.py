@@ -1,8 +1,12 @@
 import pandas as pd
 import xlsxwriter
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
 # === Postavke ===
-SRC = "sve_dionice_merged.xlsx"          # ulazna datoteka
-DST = "sve_dionice_merged_EUR.xlsx"      # izlazna datoteka
+SRC = "data/processed/sve_dionice_merged.xlsx"          # ulazna datoteka
+DST = "data/processed/sve_dionice_merged_EUR.xlsx"      # izlazna datoteka
 FX = 7.53450                             # fiksni tečaj HRK → EUR
 
 PRICE_COLS = [

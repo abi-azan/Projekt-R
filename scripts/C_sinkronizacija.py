@@ -1,5 +1,9 @@
 import pandas as pd
-file_path = "..\sve_dionice_merged_EUR_filled.xlsx"
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+file_path = "data/processed/sve_dionice_merged_EUR_filled.xlsx"
 
 xls = pd.ExcelFile(file_path)
 
@@ -80,7 +84,7 @@ plt.tight_layout()
 plt.show()
 
 # 2) PO JEDAN GRAF PO DIONICI (preporučeno)
-out_dir = "plots_by_ticker"
+out_dir = "outputs/plots/plots_by_ticker"
 os.makedirs(out_dir, exist_ok=True)
 
 for col in pivot.columns:

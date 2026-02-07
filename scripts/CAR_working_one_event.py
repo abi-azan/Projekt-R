@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import os
 from datetime import datetime
 
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
 # --- Configuration ---
 # Define the lengths of your estimation and event windows (in trading days)
 # Based on the paper: 59-day estimation, 21-day event window (-10 to +10)
@@ -14,9 +16,9 @@ EVENT_WINDOW_POST = 10 # Days after event
 EVENT_WINDOW_LEN = EVENT_WINDOW_PRE + EVENT_WINDOW_POST + 1
 
 # --- File Definitions ---
-EVENTS_FILE = 'xlsx\\inserted-deleted.xlsx' # <-- File path updated
-MARKET_INDEX_FILE = 'XZAG-IndexHistory-HRZB00ICBEX6-2010-01-01 - 2025-11-03.csv' # <-- File path updated
-STOCK_FILE_PREFIX = 'sve_dionice_merged_EUR_filled.xlsx'
+EVENTS_FILE = 'data/raw/inserted-deleted.xlsx'
+MARKET_INDEX_FILE = 'data/raw/XZAG-IndexHistory-HRZB00ICBEX6-2010-01-01 - 2025-11-03.csv'
+STOCK_FILE_PREFIX = 'data/processed/sve_dionice_merged_EUR_filled.xlsx'
 
 # Load all sheet names (each ticker)
 sheets = pd.ExcelFile(STOCK_FILE_PREFIX).sheet_names

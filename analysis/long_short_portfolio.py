@@ -1,5 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 
 def build_daily_returns(signals_path, excel_reader, master_dates, ret_col="Change Prev Close Percentage"):
@@ -49,7 +52,7 @@ def build_daily_returns(signals_path, excel_reader, master_dates, ret_col="Chang
 
 # --- MAIN EXECUTION ---
 
-excel_file = "sve_dionice_merged_EUR_filled.xlsx"
+excel_file = "data/processed/sve_dionice_merged_EUR_filled.xlsx"
 reader = pd.ExcelFile(excel_file)
 
 # Master timeline from CROBEX (CBX)
@@ -57,8 +60,8 @@ cbx_df = pd.read_excel(reader, sheet_name="CBX")
 master_dates = pd.to_datetime(cbx_df["Date"]).unique()
 
 # Long insertions, short deletions
-long_df = build_daily_returns("INSERTIONS_ANN_EVENT.csv", reader, master_dates)
-short_df = build_daily_returns("DELETIONS_ANN_EVENT.csv", reader, master_dates)
+long_df = build_daily_returns("data/events/INSERTIONS_ANN_EVENT.csv", reader, master_dates)
+short_df = build_daily_returns("data/events/DELETIONS_ANN_EVENT.csv", reader, master_dates)
 
 merged = long_df.merge(short_df, on="Date", how="inner", suffixes=("_long", "_short"))
 merged["ls_ret"] = merged["daily_ret_long"] - merged["daily_ret_short"]
@@ -67,7 +70,7 @@ merged["ls_ret"] = merged["daily_ret_long"] - merged["daily_ret_short"]
 merged["Value"] = (1 + merged["ls_ret"]).cumprod()
 merged["Return_Pct"] = (merged["Value"] - 1) * 100
 
-merged.to_csv("long_short_portfolio_results.csv", index=False)
+merged.to_csv("outputs/csv/long_short_portfolio_results.csv", index=False)
 
 # Plot
 fig, axes = plt.subplots(2, 1, figsize=(14, 8), sharex=True)
@@ -85,7 +88,7 @@ axes[1].set_ylabel("Cumulative Return (%)")
 axes[1].grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig("long_short_portfolio.png", dpi=300)
+plt.savefig("outputs/plots/long_short_portfolio.png", dpi=300)
 
 final_value = merged["Value"].iloc[-1]
 final_return = merged["Return_Pct"].iloc[-1]

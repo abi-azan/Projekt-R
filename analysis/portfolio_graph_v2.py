@@ -2,6 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 import numpy as np
+import os
+
+os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 def process_portfolio(csv_file, excel_file, initial_capital=10000):
     """Process trades and return portfolio events"""
@@ -93,16 +96,16 @@ def process_portfolio(csv_file, excel_file, initial_capital=10000):
     return portfolio_events, cash
 
 # Read the Excel file with all stock data
-excel_file = pd.ExcelFile('sve_dionice_merged_EUR_filled.xlsx')
+excel_file = pd.ExcelFile('data/processed/sve_dionice_merged_EUR_filled.xlsx')
 print(f"Found {len(excel_file.sheet_names)} sheets in Excel file")
 
 initial_capital = 1000000  # Starting with 1,000,000 EUR
 
 # Process INSERTIONS portfolio
-insertions_events, insertions_final = process_portfolio('INSERTIONS_ANN_EVENT.csv', excel_file, initial_capital)
+insertions_events, insertions_final = process_portfolio('data/events/INSERTIONS_ANN_EVENT.csv', excel_file, initial_capital)
 
 # Process DELETIONS portfolio
-deletions_events, deletions_final = process_portfolio('DELETIONS_ANN_EVENT.csv', excel_file, initial_capital)
+deletions_events, deletions_final = process_portfolio('data/events/DELETIONS_ANN_EVENT.csv', excel_file, initial_capital)
 
 # Create the plots
 fig, axes = plt.subplots(2, 2, figsize=(18, 12))
@@ -135,8 +138,8 @@ if insertions_events:
     axes[1, 0].tick_params(axis='x', rotation=45)
     
     # Save INSERTIONS results
-    portfolio_df.to_csv('insertions_portfolio_results.csv', index=False)
-    
+    portfolio_df.to_csv('outputs/csv/insertions_portfolio_results.csv', index=False)
+
     # Print INSERTIONS statistics
     total_return = ((insertions_final / initial_capital) - 1) * 100
     num_trades = len(insertions_events) // 2
@@ -180,7 +183,7 @@ if deletions_events:
     axes[1, 1].tick_params(axis='x', rotation=45)
     
     # Save DELETIONS results
-    portfolio_df.to_csv('deletions_portfolio_results.csv', index=False)
+    portfolio_df.to_csv('outputs/csv/deletions_portfolio_results.csv', index=False)
     
     # Print DELETIONS statistics
     total_return = ((deletions_final / initial_capital) - 1) * 100
@@ -198,8 +201,8 @@ if deletions_events:
     print("="*50)
 
 plt.tight_layout()
-plt.savefig('portfolio_comparison.png', dpi=300, bbox_inches='tight')
+plt.savefig('outputs/plots/portfolio_comparison.png', dpi=300, bbox_inches='tight')
 plt.show()
 
-print("\nGraphs saved to 'portfolio_comparison.png'")
-print("Detailed results saved to 'insertions_portfolio_results.csv' and 'deletions_portfolio_results.csv'")
+print("\nGraphs saved to 'outputs/plots/portfolio_comparison.png'")
+print("Detailed results saved to 'outputs/csv/'")
